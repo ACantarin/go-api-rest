@@ -49,3 +49,35 @@ func CreatePersona(w http.ResponseWriter, r *http.Request) {
 	database.DB.Create(&novaPersonalidade)
 	json.NewEncoder(w).Encode(novaPersonalidade)
 }
+
+func UpdatePersona(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, _ := strconv.Atoi(vars["id"])
+	var personalidade models.Personalidade
+
+	result := database.DB.First(&personalidade, id)
+
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(map[string]string{
+			"error": "Registro não encontrado",
+		})
+		return
+	}
+
+	json.NewDecoder(r.Body).Decode(&personalidade)
+	database.DB.Save(&personalidade)
+	json.NewEncoder(w).Encode(personalidade)
+}
+
+func DeletePersona(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, _ := strconv.Atoi(vars["id"])
+	var personalidade models.Personalidade
+	database.DB.Delete(&personalidade, id)
+	w.WriteHeader(http.StatusOK)
+
+	json.NewEncoder(w).Encode(map[string]string{
+		"message": "Registro excluido com sucesso",
+	})
+}
