@@ -9,10 +9,12 @@ import (
 func main() {
 	models.Personas = []models.Persona{
 		{
+			Id:    1,
 			Name:  "André",
 			Story: "André é um programador",
 		},
 		{
+			Id:    2,
 			Name:  "João",
 			Story: "João é um designer",
 		},
